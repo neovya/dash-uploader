@@ -33,9 +33,7 @@ class ProgressBar extends Component {
 
                     <span className="dash-uploader-progress-value"
                         style={{
-                            position: 'absolute',
-                            right: 0,
-                            left: 0,
+                            color: 'white'
                         }}
                     >{this.props.progressBar.toFixed(2) + '%'}</span>
 
