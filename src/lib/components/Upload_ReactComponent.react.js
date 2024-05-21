@@ -147,12 +147,17 @@ export default class Upload_ReactComponent extends Component {
     }
 
     checkFileExtensionIsOk = (file) => {
-        var extension = file.name.split('.').pop()
-        if (this.props.filetypes === undefined) {
+        if (this.props.filetypes == null) {
             // All filetypes are accepted
             return true;
         }
-        return this.props.filetypes.includes(extension)
+        if (file.name.indexOf('.') != -1) {
+            const extension = file.name.split('.').pop()
+            return this.props.filetypes.includes(extension)
+        } else {
+            // no file extension
+            return this.props.filetypes.includes("")
+        }
     }
 
     checkFilesAreOkayToBeUploaded = (filearray) => {
