@@ -165,7 +165,7 @@ export default class Upload_ReactComponent extends Component {
             console.log('checkFilesAreOkayToBeUploaded')
         }
         if ((this.props.maxFiles !== undefined) && (filearray.length > this.props.maxFiles)) {
-            alert('Too many files selected! Maximum number of files is ' + this.props.maxFiles.toString() + '.')
+            alert('Trop de fichiers sélectionnés ! Le nombre maximum de fichiers attendu est ' + this.props.maxFiles.toString() + '.')
             return false
         }
         if (this.props.maxTotalSize !== undefined) {
@@ -174,7 +174,7 @@ export default class Upload_ReactComponent extends Component {
                 sumOfSizes += file.size
             }, this);
             if (sumOfSizes > this.props.maxTotalSize) {
-                alert('Total file size too large (' + bytest_to_mb(sumOfSizes).toFixed(1) + ' Mb) ! Maximum total filesize is: ' + bytest_to_mb(this.props.maxTotalSize).toFixed(1) + ' Mb')
+                alert('Taille totale trop importante (' + bytest_to_mb(sumOfSizes).toFixed(1) + ' Mo) ! La limite est : ' + bytest_to_mb(this.props.maxTotalSize).toFixed(1) + ' Mo')
                 return false
             }
         }
@@ -267,18 +267,21 @@ export default class Upload_ReactComponent extends Component {
     };
 
 
-    fileError = (file, errorCount) => {
+    fileError = (file, message) => {
         if (this.debug) {
-            console.log('fileError', file, errorCount)
+            console.log('fileError', file, message)
         }
         if (this.debug) {
-            console.log('fileError with flow.js! (file, errorCount)', file, errorCount)
+            console.log('fileError with flow.js! (file, message)', file, message)
         }
+        alert('Une erreur a eu lieu au téléversement du fichier ' + file.relativePath + ' !\nDétails : ' + message);
+        this.cancelUpload();
+        /*
         if (typeof (this.props.onUploadErrorCallback) !== 'undefined') {
             this.props.onUploadErrorCallback(file, errorCount);
         } else {
             alert('Unexpected error while uploading ' + file.relativePath + '!\nPlease reupload the file.')
-        }
+        }*/
 
     };
 
@@ -305,9 +308,9 @@ export default class Upload_ReactComponent extends Component {
 
 
         if (n_bad_file_extension == 1) {
-            alert('1 file could not be uploaded, as the file extension is not supported! Allowed filetypes are: [' + this.props.filetypes.join(', ') + ']')
+            alert("1 fichier n'a pas pu être téléversé, car son extension ne correspond pas au format attendu ! Les extensions attendues sont : [" + this.props.filetypes.join(', ') + ']')
         } else if (n_bad_file_extension > 1) {
-            alert(n_bad_file_extension.toString() + ' files could not be uploaded, as the file extension is not supported! Allowed filetypes are: [' + this.props.filetypes.join(', ') + ']')
+            alert(n_bad_file_extension.toString() + " fichiers n'ont pas pu être téléversés, car leur extension ne correspond pas au format attendu ! Les extensions attendues sont : [" + this.props.filetypes.join(', ') + ']')
         }
     }
 
@@ -330,9 +333,9 @@ export default class Upload_ReactComponent extends Component {
         }, this);
 
         if (n_too_large_files == 1) {
-            alert('1 file could not be uploaded, as the file is too large! Maximum allowed file size is ' + bytest_to_mb(this.props.maxFileSize).toFixed(1) + 'Mb')
+            alert("1 fichier n'a pas pu être téléversé, car sa taille est supérieure à la limite de " + bytest_to_mb(this.props.maxFileSize).toFixed(1) + 'Mo')
         } else if (n_too_large_files > 1) {
-            alert(n_too_large_files.toString() + ' files could not be uploaded, as the file is too large! Maximum allowed file size is ' + bytest_to_mb(this.props.maxFileSize).toFixed(1) + 'Mb')
+            alert(n_too_large_files.toString() + " fichiers n'ont pas pu être téléversés, car leur taille est supérieure à la limite de " + bytest_to_mb(this.props.maxFileSize).toFixed(1) + 'Mb')
         }
     }
 
@@ -422,7 +425,7 @@ export default class Upload_ReactComponent extends Component {
                 type="file"
                 className='btn'
                 name={this.props.id + '-upload'}
-                accept={this.props.filetypes || '*'}
+                accept={this.props.filetypes ? (this.props.filetypes.map(ext => ('.' + ext)).join(',')) : '*'}
                 disabled={this.state.isUploading || this.props.disabled}
                 style={{
                     'opacity': '0',
